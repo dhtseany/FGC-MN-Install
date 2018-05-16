@@ -2,7 +2,7 @@
 
 At this stage, you should have your local wallet fully installed and configured as per this tutorial.
 ```
-https://github.com/ktjbrowne/FGC-Wallet-Install
+https://github.com/FantasyGold/FGC-Wallet-Install
 ```
 Additionally, you should have all your coins in your wallet, including those required for a Masternode.
 If you have not followed this process, please double check you have all required conifgs.
@@ -91,8 +91,15 @@ Windows users can download Putty here:
 ```
   https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
 ```
+Put your VPS server IP into Putty and connect.
 
-login as root (**Please note:** It's normal that you don't see your password after typing or pasting it) and run the following command:
+login as root 
+get your password from your vps config details.
+(if using Putty you can paste by clicking right mouse button)
+(**Please note:** It's normal that you don't see your password after typing or pasting it) 
+
+Once logged in:
+Run the following command:
 
 ```bash
 bash <( curl https://raw.githubusercontent.com/FantasyGold/FGC-MN-Install/master/install.sh )
