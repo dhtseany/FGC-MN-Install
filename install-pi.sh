@@ -53,9 +53,13 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         echo "Done."
         echo " "
         echo "Importing keys..."
-        gpg --keyserver pgpkeys.mit.edu --recv-key 8B48AD6246925553
+        # gpg --keyserver pgpkeys.mit.edu --recv-key 8B48AD6246925553
+        # gpg -a --export 8B48AD6246925553 | sudo apt-key add -
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
         gpg -a --export 8B48AD6246925553 | sudo apt-key add -
-
+        gpg -a --export 7638D0442B90D010 | sudo apt-key add -
+        
         echo "Refreshing repos..."
         sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt autoremove -y &&
         
