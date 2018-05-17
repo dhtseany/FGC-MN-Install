@@ -13,7 +13,9 @@ https://www.raspberrypi.org/downloads/noobs/)
 
 ## FantasyGold-Core (Easy) Installation (Recommended for most)
 Enter the following command to download the install-pi.sh script and run it:
+```
 $ sudo bash <( curl URL_TO_FOLLOW )
+```
 
 ## Manual Installation (Advanced Users Only!)
 
