@@ -39,7 +39,6 @@ read -e -p "Begin? [y/N] : " BEGIN_Q_R
 if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
     then
         ## Create a better swap file warning:
-
         
         clear
         echo "============================================="
