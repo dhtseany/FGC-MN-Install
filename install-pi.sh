@@ -42,18 +42,29 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         
         clear
         echo "============================================="
+        echo "Installing build and package dependancies"
+        echo "============================================="
+        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr devscripts bc -y
+
+        echo " "
+        echo "============================================="
         echo "Installing keys for jessie-backports"
         echo "============================================="
-        sudo apt-get install devscripts bc
         echo "deb-src http://httpredir.debian.org/debian jessie-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/jessie-backports.list
+        echo "Done."
+        echo " "
+        echo "Importing keys..."
         gpg --keyserver pgpkeys.mit.edu --recv-key 8B48AD6246925553
         gpg -a --export 8B48AD6246925553 | sudo apt-key add -
+
+        echo "Refreshing repos..."
         sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt autoremove -y &&
         
         ## openssl-1.0
+        clear
         echo "     "
         echo "============================================="
-        echo "Installing openssl-1.0.21-1-armhf from src..."
+        echo "Installing openssl-1.0.21-1-armhf from src"
         echo "============================================="
         mkdir -p $TMP_DIR/openssl-1.0-arm
         cd $TMP_DIR/openssl-1.0-arm
@@ -61,9 +72,9 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         cd openssl-1.0.2l/
         export DEB_BUILD_OPTIONS=nocheck; debuild -us -uc -aarmhf
         sudo dpkg -i libssl1.0.0_1.0.2l-1~bpo8+1_armhf.deb
-        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr -y
         
         ## db4.8
+        clear
         echo "     "
         echo "============================================="
         echo "Installing db4.8 from src..."
@@ -78,6 +89,7 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         sudo make install
 
         ## FCG-Core
+        clear
         echo "     "
         echo "============================================="
         echo "Installing FantasyGold-Core from src..."
