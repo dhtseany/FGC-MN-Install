@@ -104,29 +104,25 @@ $ sudo make install
 ```
 
 ## Install openssl from src for 1.0 support:
-Start by cloning from src:
+First download src from jessie-backports:
 ```
-$ git clone git://git.openssl.org/openssl.git
+apt-get source openssl/jessie-backports
 ```
-cd into build directory:
+cd into the newly created directory:
 ```
-$ cd openssl
+cd openssl-1.0.2l/
 ```
-Configure:
+Build and create .deb files:
 ```
-$ ./config --prefix=/usr
+export DEB_BUILD_OPTIONS=nocheck; debuild -us -uc -aarmhf
 ```
-Make:
+Install deb:
 ```
-$ make
+sudo dpkg -i libssl1.0.0_1.0.2l-1~bpo8+1_armhf.deb
 ```
-Make test (to verify a good build of openssl-1.0)
+Install deb
 ```
-$ make test
-```
-Install:
-```
-$ sudo make install
+sudo dpkg -i libssl-dev_1.0.2l-1~bpo8+1_armhf.deb
 ```
 
 ## FantasyGold-Core Installation from src:
