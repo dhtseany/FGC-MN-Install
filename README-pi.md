@@ -3,6 +3,9 @@
 
 All of this is a work in progress where I’m tracking attempts along the way. This is not yet functional. Steps for manual install, usage of install-pi.sh and bugfixes will be outlined here. This code probably doesn't work yet. You've been warned.
 
+## To-do:
+1. Finish qt5 support
+
 ## Prerequisites:
 - Raspberry Pi Model 3 B+ (Older models will probably work but this is the latest iteration of the hardware and therefore the most capable. While this install process should function the same across all rPi’s, your performance results may vary. Official support and documentation will assume you have an rPi 3 B+).
 SDCard containing the NOOBS install. (While a non-gui install is possible you’ll lose qt support and in turn no wallet will be locally available on the Pi. Official installation documentation and installer download is available here:
