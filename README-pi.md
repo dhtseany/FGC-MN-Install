@@ -8,7 +8,7 @@ All of this is a work in progress where I’m tracking attempts along the way. T
 SDCard containing the NOOBS install. (While a non-gui install is possible you’ll lose qt support and in turn no wallet will be locally available on the Pi. Official installation documentation and installer download is available here:
 https://www.raspberrypi.org/downloads/noobs/)
 
-- A firewall capable of properly perform NAT translations. (Otherwise known as a “port forward”)
+- A firewall capable of properly performing NAT translations. (Otherwise known as a “port forwards”)
 
 
 ## FantasyGold-Core (Easy) Installation (Recommended for most)
