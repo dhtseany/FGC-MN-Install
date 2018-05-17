@@ -4,7 +4,6 @@ TMP_DIR=/tmp/fgc
 F_USER="FantasyGold"
 FGC_VERSION="1.2.4"
 
-
 clear
 echo "
     ___T_
@@ -72,6 +71,7 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         cd openssl-1.0.2l/
         export DEB_BUILD_OPTIONS=nocheck; debuild -us -uc -aarmhf
         sudo dpkg -i libssl1.0.0_1.0.2l-1~bpo8+1_armhf.deb
+        sudo dpkg -i libssl-dev_1.0.2l-1~bpo8+1_armhf.deb
         
         ## db4.8
         clear
