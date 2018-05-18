@@ -76,7 +76,8 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         export DEB_BUILD_OPTIONS=nocheck; debuild -us -uc -aarmhf
         sudo dpkg -i libssl1.0.0_1.0.2l-1~bpo8+1_armhf.deb
         sudo dpkg -i libssl-dev_1.0.2l-1~bpo8+1_armhf.deb
-        
+        sudo ldconfig ## I believe this fixes the issue where the build doesn't find openssl-1.0
+
         ## db4.8
         clear
         echo "     "
