@@ -79,6 +79,10 @@ $ sudo dpkg -i libssl1.0.0_1.0.2l-1~bpo8+1_armhf.deb
 ```
 $ sudo dpkg -i libssl-dev_1.0.2l-1~bpo8+1_armhf.deb
 ```
+Update ldconfig
+```
+$ sudo ldconfig
+```
 
 ## Install db4.8 from src:
 Download it from Oracle:
