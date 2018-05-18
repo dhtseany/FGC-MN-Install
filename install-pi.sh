@@ -45,6 +45,7 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         echo "============================================="
         sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr devscripts bc -y
 
+        clear
         echo " "
         echo "============================================="
         echo "Installing keys for jessie-backports"
@@ -77,7 +78,9 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         sudo dpkg -i libssl1.0.0_1.0.2l-1~bpo8+1_armhf.deb
         sudo dpkg -i libssl-dev_1.0.2l-1~bpo8+1_armhf.deb
         sudo ldconfig ## I believe this fixes the issue where the build doesn't find openssl-1.0
-
+        echo "Quick pause for review and reflection..."
+        sleep 10
+        
         ## db4.8
         clear
         echo "     "
@@ -92,6 +95,8 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         ../dist/configure --enable-cxx --prefix=/usr
         make -j8
         sudo make install
+        echo "Quick pause for review and reflection..."
+        sleep 5
 
         ## FCG-Core
         clear
