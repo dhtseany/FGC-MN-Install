@@ -9,6 +9,7 @@ You'll probably notice the absence of "sudo" with the Raspberry Pi's installatio
 ## To-do:
 1. Finish qt5 support
 2. Finish creating mn deployment scripts if user chooses to do so
+3. Stop installing with "make install" and start pushing everything into their own .deb packages
 
 ## Prerequisites:
 - Raspberry Pi Model 3 B+ (Older models will probably work but this is the latest iteration of the hardware and therefore the most capable. While this install process should function the same across all rPi’s, your performance results may vary. Official support and documentation will assume you have an rPi 3 B+).
