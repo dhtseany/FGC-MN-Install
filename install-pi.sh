@@ -1,9 +1,10 @@
 #!/bin/bash
 
 TMP_DIR=/tmp/fgc
-F_USER="FantasyGold"
+F_USER="fantasygold"
 FGC_VERSION="1.2.4"
 
+#====Individual Options for Testing====#
 if [[ ("$1" == "core") ]];
     then
         echo "User chose to compile the local fg-core bins...."
@@ -39,6 +40,41 @@ if [[ ("$1" == "core") ]];
         fi
         exit 0
 fi
+if [[ ("$1" == "deps") ]];
+    then
+        echo "User chose to install deps available in repos...."
+        mkdir -p $TMP_DIR
+        touch $TMP_DIR/run.log
+        echo "Job started at:" >> $TMP_DIR/run.log
+        date +%H%M%S >> $TMP_DIR/run.log
+        clear
+        echo "============================================="
+        echo "Installing build and package dependancies"
+        echo "============================================="
+        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev libzmq-dev devscripts bc -y
+
+        clear
+        echo " "
+        echo "============================================="
+        echo "Installing keys for jessie-backports"
+        echo "============================================="
+        echo "deb-src http://httpredir.debian.org/debian jessie-backports main contrib non-free" | sudo tee /etc/apt/sources.list.d/jessie-backports.list
+        echo "Done."
+        echo " "
+        echo "Importing keys..."
+        # gpg --keyserver pgpkeys.mit.edu --recv-key 8B48AD6246925553
+        # gpg -a --export 8B48AD6246925553 | sudo apt-key add -
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
+        # gpg -a --export 8B48AD6246925553 | sudo apt-key add -
+        # gpg -a --export 7638D0442B90D010 | sudo apt-key add -
+        echo "Refreshing repos..."
+        sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt autoremove -y &&
+        echo "jess-backports added at:" >> $TMP_DIR/run.log
+        exit        
+fi
+
+
 if [[ ("$1" == "db48-testing") ]];
     then
         ## db4.8
@@ -70,6 +106,94 @@ if [[ ("$1" == "db48-testing") ]];
                 echo "Build of db4.8 failed."
                 exit 1
         fi
+fi
+
+if [[ ("$1" == "adopt") ]];
+    then
+        clear
+        echo "User chose to adpot a new remote node...."
+        mkdir -p $TMP_DIR
+        # sudo adduser -M -r $F_USER
+        sudo adduser $F_USER --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password > /dev/null
+        RPCUSER=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
+        RPCPASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+        PUBLIC_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+        INTERNAL_IP=$(hostname -I)
+
+        read -e -p "Masternode Private Key [none]: " KEY
+
+        read -e -p "Choose tcp port for node [57810] : " NODEPORT_Q_R
+
+        if [[ ( -z "$NODEPORT_Q_R" ) ]];
+            then
+                NODEPORT="57810"
+            else
+                NODEPORT=$NODEPORT_Q_R
+        fi
+cat > $TMP_DIR/fantasygoldd.service << EOL
+[Unit]
+Description=fantasygoldd
+After=network.target
+[Service]
+Type=forking
+User=$F_USER
+WorkingDirectory=/home/FantasyGold
+ExecStart=/usr/local/bin/fantasygoldd -conf=/home/$F_USER/.fantasygold/fantasygold.conf -datadir=/home/FantasyGold/.fantasygold
+ExecStop=/usr/local/bin/fantasygold-cli -conf=/home/$F_USER/.fantasygold/fantasygold.conf -datadir=/home/FantasyGold/.fantasygold stop
+Restart=on-abort
+[Install]
+WantedBy=multi-user.target
+EOL
+
+
+
+        # cat > $TMP_DIR/fantasygoldd.service << EOL
+        # [Unit]
+        # Description=fantasygoldd
+        # After=network.target
+        # [Service]
+        # Type=forking
+        # User=$F_USER
+        # WorkingDirectory=/home/FantasyGold
+        # ExecStart=/usr/local/bin/fantasygoldd -conf=/home/$F_USER/.fantasygold/fantasygold.conf -datadir=/home/FantasyGold/.fantasygold
+        # ExecStop=/usr/local/bin/fantasygold-cli -conf=/home/$F_USER/.fantasygold/fantasygold.conf -datadir=/home/FantasyGold/.fantasygold stop
+        # Restart=on-abort
+        # [Install]
+        # WantedBy=multi-user.target
+        # EOL
+
+
+        touch $TMP_DIR/fantasygold.conf
+cat > $TMP_DIR/fantasygold.conf << EOL
+rpcuser=$RPCUSER
+rpcpassword=$RPCPASSWORD
+rpcallowip=127.0.0.1
+listen=1
+server=1
+daemon=1
+logtimestamps=1
+maxconnections=256
+externalip=$PUBLIC_IP
+bind=$INTERNAL_IP:$NODEPORT
+masternodeaddr=$PUBLIC_IP
+masternodeprivkey=$KEY
+masternode=1
+EOL
+
+        sudo mkdir -p /home/$F_USER/.fantasygold
+        sudo chown -R $F_USER:$F_USER /home/$F_USER
+        sudo mv $TMP_DIR/fantasygold.conf /home/$F_USER/.fantasygold/fantasygold.conf
+        sudo chown -R $F_USER:$F_USER /home/$F_USER/.fantasygold
+        sudo chmod 600 /home/$F_USER/.fantasygold/fantasygold.conf
+        
+        sudo mv $TMP_DIR/fantasygoldd.service /etc/systemd/system/fantasygoldd.service
+        sudo chown root:root /etc/systemd/system/fantasygoldd.service
+        sudo systemctl daemon-reload
+        sudo systemctl enable fantasygoldd && sudo systemctl start fantasygoldd
+        sudo systemctl status fantasygoldd
+        echo "User process is complete."
+        echo "Use `sudo su -c '/usr/local/bin/fantasygold-cli startmasternode local false' fantasygold` to check progress."
+        exit 0
 fi
 
 clear
@@ -241,8 +365,133 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         echo "=============================" >> $TMP_DIR/run.log
 
         echo "The installation completed successfully."
-        exit 0
+        # exit 0
     else
         echo "User aborted process."
+        exit 1
+fi
+
+echo "At this stage we're ready to begin configuring your new master node."
+echo "If you only wanted to install and build for the qt5 wallet, this is where you'll quit [Simply select N]"
+read -e -p "Would you like to continue creating the user account and configuring the masternode? [y/N] : " NEWUSER_Q_R
+
+if [[ ("$NEWUSER_Q_R" == "y" || "$NEWUSER_Q_R" == "Y") ]];
+    then
+        clear
+        echo "User chose continue creating the user account...."
+        mkdir -p $TMP_DIR
+        # sudo adduser -M -r $F_USER
+        sudo adduser $F_USER --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password > /dev/null
+        RPCUSER="cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1"
+        RPCPASSWORD="cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1"
+        PUBLIC_IP="dig +short myip.opendns.com @resolver1.opendns.com"
+        INTERNAL_IP="hostname -I"
+
+        read -e -p "Masternode Private Key [none]: " KEY
+
+        read -e -p "Choose tcp port for node [57810] : " NODEPORT_Q_R
+
+        if [[ ( -z "$NODEPORT_Q_R" ) ]];
+            then
+                NODEPORT="57810"
+            else
+                NODEPORT=$NODEPORT_Q_R
+        fi
+cat > $TMP_DIR/fantasygoldd.service << EOL
+[Unit]
+Description=fantasygoldd
+After=network.target
+[Service]
+Type=forking
+User=$F_USER
+WorkingDirectory=/home/FantasyGold
+ExecStart=/usr/local/bin/fantasygoldd -conf=/home/$F_USER/.fantasygold/fantasygold.conf -datadir=/home/FantasyGold/.fantasygold
+ExecStop=/usr/local/bin/fantasygold-cli -conf=/home/$F_USER/.fantasygold/fantasygold.conf -datadir=/home/FantasyGold/.fantasygold stop
+Restart=on-abort
+[Install]
+WantedBy=multi-user.target
+EOL
+
+
+
+        # cat > $TMP_DIR/fantasygoldd.service << EOL
+        # [Unit]
+        # Description=fantasygoldd
+        # After=network.target
+        # [Service]
+        # Type=forking
+        # User=$F_USER
+        # WorkingDirectory=/home/FantasyGold
+        # ExecStart=/usr/local/bin/fantasygoldd -conf=/home/$F_USER/.fantasygold/fantasygold.conf -datadir=/home/FantasyGold/.fantasygold
+        # ExecStop=/usr/local/bin/fantasygold-cli -conf=/home/$F_USER/.fantasygold/fantasygold.conf -datadir=/home/FantasyGold/.fantasygold stop
+        # Restart=on-abort
+        # [Install]
+        # WantedBy=multi-user.target
+        # EOL
+
+
+        touch $TMP_DIR/fantasygold.conf
+cat > $TMP_DIR/fantasygold.conf << EOL
+rpcuser=$RPCUSER
+rpcpassword=$RPCPASSWORD
+rpcallowip=127.0.0.1
+listen=1
+server=1
+daemon=1
+logtimestamps=1
+maxconnections=256
+externalip=$PUBLIC_IP
+bind=$INTERNAL_IP:$NODEPORT
+masternodeaddr=$PUBLIC_IP
+masternodeprivkey=$KEY
+masternode=1
+EOL
+
+        sudo mkdir -p /home/$F_USER/.fantasygold
+        sudo chown -R $F_USER:$F_USER /home/$F_USER
+        sudo mv $TMP_DIR/fantasygold.conf /home/$F_USER/.fantasygold/fantasygold.conf
+        sudo chown -R $F_USER:$F_USER /home/$F_USER/.fantasygold
+        sudo chmod 600 /home/$F_USER/.fantasygold/fantasygold.conf
+
+        sudo mv $TMP_DIR/fantasygoldd.service /etc/systemd/system/fantasygoldd.service
+        sudo chown root:root /etc/systemd/system/fantasygoldd.service
+        sudo systemctl daemon-reload
+        sudo systemctl enable fantasygoldd && sudo systemctl start fantasygoldd
+        sudo systemctl status fantasygoldd
+        echo "User process is complete."
+        sleep 1
+
+        cat << EOL
+Now, you need to start your masternode. Please go to your desktop wallet and
+select your masternode and click the start buttom.
+EOL
+
+read -p "Press any key to continue after you've done that. " -n1 -s
+
+#clear
+
+echo "Your masternode is syncing. Please wait for this process to finish."
+echo "CTRL+C to exit the masternode sync once you see the MN ENABLED in your local wallet." && echo ""
+
+# until su -c "fantasygold-cli startmasternode local false 2>/dev/null | grep 'successfully started' > /dev/null" $USER; do
+#   for (( i=0; i<${#CHARS}; i++ )); do
+#     sleep 2
+#     echo -en "${CHARS:$i:1}" "\r"
+#   done
+# done
+
+sleep 1
+su -c "/usr/local/bin/fantasygold-cli startmasternode local false" $USER
+sleep 1
+clear
+su -c "/usr/local/bin/fantasygold-cli masternode status" $USER
+sleep 5
+
+echo "" && echo "Masternode setup completed." && echo ""
+
+        
+        echo "Use `sudo su -c '/usr/local/bin/fantasygold-cli startmasternode local false' fantasygold` to check progress."
+    else
+        echo "User has chosen to skip the new user process."
         exit 1
 fi
