@@ -51,7 +51,7 @@ if [[ ("$1" == "deps") ]];
         echo "============================================="
         echo "Installing build and package dependancies"
         echo "============================================="
-        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev libzmq-dev devscripts bc -y
+        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev libzmq-dev devscripts bc libprotoc-dev libczmq4 libczmq-dev protobuf-compiler -y
 
         clear
         echo " "
@@ -238,7 +238,7 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         echo "============================================="
         echo "Installing build and package dependancies"
         echo "============================================="
-        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr devscripts bc -y
+        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev libzmq-dev devscripts bc libprotoc-dev libczmq4 libczmq-dev protobuf-compiler -y
 
         clear
         echo " "
