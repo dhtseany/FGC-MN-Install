@@ -51,7 +51,7 @@ if [[ ("$1" == "deps") ]];
         echo "============================================="
         echo "Installing build and package dependancies"
         echo "============================================="
-        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev libzmq-dev devscripts bc libprotoc-dev libczmq4 libczmq-dev protobuf-compiler -y
+        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev devscripts bc libprotoc-dev libczmq4 libczmq-dev protobuf-compiler -y
 
         clear
         echo " "
@@ -70,6 +70,8 @@ if [[ ("$1" == "deps") ]];
         # gpg -a --export 7638D0442B90D010 | sudo apt-key add -
         echo "Refreshing repos..."
         sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt autoremove -y &&
+        echo "Installing libzmq-dev"
+        sudo apt-get install libzmq-dev -y
         echo "jess-backports added at:" >> $TMP_DIR/run.log
         exit        
 fi
@@ -238,7 +240,7 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         echo "============================================="
         echo "Installing build and package dependancies"
         echo "============================================="
-        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev libzmq-dev devscripts bc libprotoc-dev libczmq4 libczmq-dev protobuf-compiler -y
+        sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev devscripts bc libprotoc-dev libczmq4 libczmq-dev protobuf-compiler -y
 
         clear
         echo " "
@@ -257,6 +259,9 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         # gpg -a --export 7638D0442B90D010 | sudo apt-key add -
         echo "Refreshing repos..."
         sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt autoremove -y &&
+        clear
+        echo "Install libczmq-dev"
+        sudo apt-get install libczmq-dev -y
         echo "jess-backports added at:" >> $TMP_DIR/run.log        
         
         ## openssl-1.0
