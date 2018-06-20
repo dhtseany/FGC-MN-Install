@@ -3,6 +3,7 @@
 TMP_DIR=/tmp/fgc
 F_USER="fantasygold"
 FGC_VERSION="1.2.4"
+SWAPREQ="1024000"
 
 #====Individual Options for Testing====#
 if [[ ("$1" == "core") ]];
@@ -199,6 +200,51 @@ EOL
 fi
 
 clear
+
+SWAP_TOTAL=`grep SwapTotal /proc/meminfo | awk '{print $2}'`
+if [[ "$SWAPTOTAL" -lt "$SWAPREQ" ]]
+    then
+    echo "
+    ___T_
+   | o o |
+   |__-__|
+   /| []|\\
+ ()/|___|\()
+    |_|_|
+    /_|_\  ----- MASTERNODE CONFIGURATOR v1 ------+
+|                                                |
+|           Fantasy Gold Coin $FGC_VERSION for          |::
+|               Raspberry Pi 3 B+                |::
+|                                                |::
+|    This process will install the latest        |::
+|    Fantasy Gold Coin Core and the QT5          |::
+|    wallet, which is optional.                  |::
+|                                                |::
+|    Your system does not currently have enough  |::
+|    swap space available. This needs addressed  |::
+|    before we can continue. Would you like this |::
+|    to automatically allocate the recommended   |::
+|    amount of swap?                             |::
+|    [y] Yes                                     |::
+|    [N] No                                      |::
+|                                                |::
++------------------------------------------------+::
+::::::::::::::::::::::::::::::::::::::::::::::::::
+"
+
+    read -e -p "Create 1GB swapfile? [y/N] : " CREATE_SWAP_Q_R
+
+    if [[ ("$CREATE_SWAP_Q_R" == "y" || "$CREATE_SWAP_Q_R" == "Y") ]];
+        then
+            sudo dd bs=1M count=1024 if=/dev/zero of=/swapfile status=progress
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
+            sudo echo "# swapfile" >> /etc/fstab
+            sudo echo "/swapfile none swap defaults 0 0" >> /etc/fstab
+    fi
+fi
+
 echo "
     ___T_
    | o o |
@@ -285,15 +331,15 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         # echo "Quick pause for review and reflection..."
         # sleep 10
         
-        read -e -p "Does it appear openssl finished building without errors? [y/N] : " OPENSSLINSTALL_Q_R
+        # read -e -p "Does it appear openssl finished building without errors? [y/N] : " OPENSSLINSTALL_Q_R
 
-        if [[ ("$OPENSSLINSTALL_Q_R" == "y" || "$OPENSSLINSTALL_Q_R" == "Y") ]];
-            then
-                EXIT_STATUS=0
-            else
-                echo "Build of openssl-1.0 failed."
-                exit 1
-        fi
+        # if [[ ("$OPENSSLINSTALL_Q_R" == "y" || "$OPENSSLINSTALL_Q_R" == "Y") ]];
+        #     then
+        #         EXIT_STATUS=0
+        #     else
+        #         echo "Build of openssl-1.0 failed."
+        #         exit 1
+        # fi
 
 
         ## db4.8
@@ -315,15 +361,15 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
 
         # echo "Quick pause for review and reflection..."
         # sleep 5
-        read -e -p "Does it appear db4.8 finished building without errors? [y/N] : " DB48_Q_R
+        # read -e -p "Does it appear db4.8 finished building without errors? [y/N] : " DB48_Q_R
 
-        if [[ ("$DB48_Q_R" == "y" || "$DB48_Q_R" == "Y") ]];
-            then
-                EXIT_STATUS=0
-            else
-                echo "Build of db4.8 failed."
-                exit 1
-        fi
+        # if [[ ("$DB48_Q_R" == "y" || "$DB48_Q_R" == "Y") ]];
+        #     then
+        #         EXIT_STATUS=0
+        #     else
+        #         echo "Build of db4.8 failed."
+        #         exit 1
+        # fi
 
         ## FCG-Core
         clear
@@ -341,27 +387,27 @@ if [[ ("$BEGIN_Q_R" == "y" || "$BEGIN_Q_R" == "Y") ]];
         ./configure
         make
         echo "fg-c build job finished at:" >> $TMP_DIR/run.log
-        read -e -p "Does it appear FantasyGold-core finished building without errors? [y/N] : " FGC1_Q_R
+        # read -e -p "Does it appear FantasyGold-core finished building without errors? [y/N] : " FGC1_Q_R
 
-        if [[ ("$FGC1_Q_R" == "y" || "$FGC1_Q_R" == "Y") ]];
-            then
-                EXIT_STATUS=0
-            else
-                echo "Build of FantasyGold-core failed."
-                exit 1
-        fi
+        # if [[ ("$FGC1_Q_R" == "y" || "$FGC1_Q_R" == "Y") ]];
+        #     then
+        #         EXIT_STATUS=0
+        #     else
+        #         echo "Build of FantasyGold-core failed."
+        #         exit 1
+        # fi
         
         sudo make install
 
-        read -e -p "Does it appear FantasyGold-core finished installing without errors? [y/N] : " FGC2_Q_R
+        # read -e -p "Does it appear FantasyGold-core finished installing without errors? [y/N] : " FGC2_Q_R
 
-        if [[ ("$FGC1_Q_R" == "y" || "$FGC1_Q_R" == "Y") ]];
-            then
-                EXIT_STATUS=0
-            else
-                echo "Install of FantasyGold-core failed."
-                exit 1
-        fi
+        # if [[ ("$FGC1_Q_R" == "y" || "$FGC1_Q_R" == "Y") ]];
+        #     then
+        #         EXIT_STATUS=0
+        #     else
+        #         echo "Install of FantasyGold-core failed."
+        #         exit 1
+        # fi
 
 
         clear

@@ -75,7 +75,7 @@ Note: I switch over to using root while performing these commands using sudo su
 ## Install dependencies:
 Repo-ready:
 ```
-$ sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev libzmq-dev devscripts bc libprotoc-dev libczmq4 libczmq-dev protobuf-compiler -y
+$ sudo apt-get install autoconf libtool libboost-all-dev libminiupnpc-dev miniupnpc qt5-default libevent-dev dirmngr dnsutils qt-sdk libprotobuf-dev libzmq-dev devscripts bc libprotoc-dev libczmq4 protobuf-compiler -y
 ```
 Note: I normally reboot here as well just for good measure, ton of packages will pull down however the installer script won't do this part for you. If you choose to run this command first you can then reboot and easily begin the rest of the scripted installation without fear of failures. If you encounter build failures and you did not reboot, reboot your system and try again.
 
@@ -92,6 +92,11 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
 ```
 gpg -a --export 8B48AD6246925553 | sudo apt-key add -
 gpg -a --export 7638D0442B90D010 | sudo apt-key add -
+```
+
+## Install libczmq-dev
+```
+$ sudo apt-get install libczmq-dev
 ```
 
 ## Install openssl-1.0
