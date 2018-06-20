@@ -2,14 +2,14 @@
 
 
 ## Notes:
-All of this is a work in progress where I’m tracking attempts along the way. This is not yet functional. Steps for manual install, usage of install-pi.sh and bugfixes will be outlined here. This code probably doesn't work yet. You've been warned.
+~~All of this is a work in progress where I’m tracking attempts along the way. This is not yet functional. Steps for manual install, usage of install-pi.sh and bugfixes will be outlined here. This code probably doesn't work yet. You've been warned.~~
 
-You'll probably notice the absence of "sudo" with the Raspberry Pi's installation command (or using install-pi.sh yourself), unlike the traditional easy installation for x86_x64 (install.sh). This is intentional, as we're building multiple packages from 3rd party upstream code providers. It is considered bad practice to build from source using a privileged user account and therefore this script has been designed to run as your normal user account. It will prompt for your credentials and invoke sudo on it's own when needed for installation tasks requiring privilege escalation.
+This software has now entered a beta phase, and it ready for public testing. To use this software, follow the directions below. You'll probably notice the absence of "sudo" with the Raspberry Pi's installation command (or using install-pi.sh yourself), unlike the traditional easy installation for x86_x64 (install.sh). This is intentional, as we're building multiple packages from 3rd party upstream code providers. It is considered bad practice to build from source using a privileged user account and therefore this script has been designed to run as your normal user account to limit risk. It will prompt for your credentials and invoke sudo on it's own when needed for installation tasks requiring privilege escalation.
 
 ## To-do:
-1. Finish qt5 support
+1. ~~Finish qt5 support~~ (Done)
 2. Finish creating mn deployment scripts if user chooses to do so
-3. Stop installing with "make install" and start pushing everything into their own .deb packages
+3. Stop installing with "make install" and start pushing everything into their own .deb packages (Help from an experienced Debian package maintainer would be super helpful!)
 
 ## Prerequisites:
 - Raspberry Pi Model 3 B+ (Older models will probably work but this is the latest iteration of the hardware and therefore the most capable. While this install process should function the same across all rPi’s, your performance results may vary. Official support and documentation will assume you have an rPi 3 B+).
@@ -20,10 +20,20 @@ https://www.raspberrypi.org/downloads/noobs/)
 
 - At least 1GB of Swap enabled during build otherwise script will fail during FantasyGold-core build
 
+- Accepting the fact that this process will likely take 1+ hours to complete from start to finish.
+
 ## FantasyGold-Core (Easy) Installation (Recommended for most)
 Enter the following command to download the install-pi.sh script and run it:
 ```
-$ bash <( curl URL_TO_FOLLOW )
+$ git clone https://github.com/FantasyGold/FGC-MN-Install.git
+```
+
+```
+$ cd FGC-MN-Install/
+```
+
+```
+$ ./install-pi.sh
 ```
 
 ## Manual Installation (Advanced Users Only!)
